@@ -1,0 +1,4 @@
+interface:
+  display_name: "Student Feedback"
+  short_description: "Draft clear feedback on student work"
+  default_prompt: "Use $give-student-feedback to draft constructive feedback, feedforward, and grading notes for this student work."
