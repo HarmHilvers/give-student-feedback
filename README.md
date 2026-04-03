@@ -2,77 +2,75 @@
 
 Draft, refine, and structure written feedback, feedforward, rubric-aligned comments, and grading notes for student work.
 
-## What it does
+## Runtime Model
 
-This skill helps turn student work, assignment criteria, and rubric information into feedback that is specific, constructive, and usable. It is designed for requests such as:
+This repository uses a thin multi-agent runtime model:
 
-- giving feedback on a student submission
-- writing feedforward
-- grading with justification
-- giving rubric-by-rubric comments
-- evaluating multiple students in a consistent format
+- `core/specification.md` is the canonical, vendor-neutral source of truth.
+- `agents/` contains thin runtime adapters that point back to the canonical core.
+- `references/` contains supporting pedagogical guidance.
+- `docs/` contains compatibility and regression documents for cross-agent use.
 
-The approach is built around concrete evidence from the work itself and the distinction between **feed up**, **feed back**, and **feed forward**.
+The workflow is intentionally agent-agnostic. Runtime-specific files exist only to help a host agent load and apply the same core behavior consistently.
 
-## Installation
+## Installation And Use For Codex/OpenAI
 
-This repository is structured as a Codex skill: a folder with a `SKILL.md` file and optional supporting files. Codex discovers skills either from your global Codex home directory or from a project-local skills folder.
+Codex can use this repository as a skill repository entry, with `SKILL.md` acting as the Codex/OpenAI adapter and `core/specification.md` as the canonical core.
 
-### Option 1: install globally
+Global install:
 
 ```bash
 git clone https://github.com/HarmHilvers/give-student-feedback.git ~/.codex/skills/give-student-feedback
 ```
 
-### Option 2: install in a project
+Project-local install:
 
 ```bash
 mkdir -p .agents/skills
 git clone https://github.com/HarmHilvers/give-student-feedback.git .agents/skills/give-student-feedback
 ```
 
-After installation, restart Codex or start a new session so the skill can be discovered.
+For OpenAI-aligned runtimes that consume adapter metadata, use `agents/openai.yaml` together with the canonical core file. The adapter should remain thin and defer to `core/specification.md`.
 
-## Input
+## Use For Claude
 
-Provide as much of the following as possible:
+Use `agents/claude.md` as the Claude-specific adapter and load `core/specification.md` first.
 
-- the student work or submission
-- the assignment brief or task description
-- the rubric, criteria, or learning objectives
-- the grading scale, if grading is needed
-- whether you want feedback, feedforward, grading, or a combination
+If the Claude runtime supports repository files or project knowledge, point it at the canonical core file directly. If it does not, mirror the canonical core into the runtime's instruction mechanism without changing its semantics.
 
-## Output
+## Use For Other Agents
 
-Typical output includes:
+Use `agents/generic.md` as the minimum adapter for other frameworks.
 
-- a concise overall judgment
-- strengths with evidence from the work
-- improvement points with evidence from the work
-- 1–3 practical next steps
-- grade justification when grading criteria are available
+Any compatible runtime should:
 
-For rubric-based requests, feedback can be organized per criterion.
+- load `core/specification.md` as the primary instruction source
+- accept student work and optional rubric or assignment context
+- produce plain-text or Markdown output
+- preserve the canonical behavior around evidence, tone, grading restraint, and language defaults
+
+## Compatibility And Regression Documents
+
+- `docs/compatibility-contract.md` defines the cross-agent compatibility contract.
+- `docs/acceptance-criteria.md` defines explicit acceptance and non-regression criteria.
 
 ## Principles
 
 - Base every comment on observable evidence in the work.
-- Focus on the product, not the student as a person.
+- Focus on the work product, not the student as a person.
 - Separate observation from interpretation.
 - Be specific and actionable.
-- Include both strengths and improvement points.
-- Suggest directions for revision without rewriting the full text.
-- Follow the user’s language.
+- Include strengths as well as improvement points.
+- Suggest directions for revision without rewriting the full submission unless explicitly requested.
+- Follow the user's language by default.
 
-## Default structure
+## Repository Structure
 
-1. **Feed up** — what the work is aiming at
-2. **Feed back** — how the current work performs
-3. **Feed forward** — what to do next
-
-## Repository structure
-
-- `SKILL.md` — skill instructions and workflow
-- `references/feedback-guidelines.md` — feedback principles and rationale
-- `agents/` — supporting agent configuration files
+- `core/specification.md` - canonical vendor-neutral workflow and behavior
+- `SKILL.md` - Codex/OpenAI adapter
+- `agents/openai.yaml` - OpenAI-aligned metadata adapter
+- `agents/claude.md` - Claude adapter
+- `agents/generic.md` - generic adapter for other runtimes
+- `references/feedback-guidelines.md` - supporting pedagogical guidance
+- `docs/compatibility-contract.md` - cross-agent compatibility contract
+- `docs/acceptance-criteria.md` - explicit acceptance and regression criteria

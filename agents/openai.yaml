@@ -1,4 +1,4 @@
 interface:
   display_name: "Student Feedback"
   short_description: "Draft clear feedback on student work"
-  default_prompt: "Use $give-student-feedback to draft constructive feedback, feedforward, and grading notes for this student work."
+  default_prompt: "Load core/specification.md as the canonical workflow, apply the Codex/OpenAI adapter in SKILL.md, and produce evidence-based feedback, feedforward, and grading notes that follow the repository's core rules."
